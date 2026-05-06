@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Let Me Grok That For You</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a, #1a1a2e);
+            color: #00ff9d;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        h1 {
+            font-size: 3.5em;
+            margin: 0.2em;
+            text-shadow: 0 0 20px #00ff9d;
+        }
+        .subtitle {
+            color: #ff00aa;
+            font-size: 1.4em;
+            margin-bottom: 2em;
+        }
+        input {
+            padding: 15px;
+            width: 60%;
+            max-width: 500px;
+            font-size: 1.2em;
+            border: 3px solid #00ff9d;
+            border-radius: 50px;
+            background: #111;
+            color: #fff;
+        }
+        button {
+            padding: 15px 40px;
+            margin-left: 15px;
+            font-size: 1.3em;
+            background: #ff00aa;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 0 20px #ff00aa;
+        }
+        button:hover {
+            transform: scale(1.1);
+            background: #00ff9d;
+            color: #111;
+        }
+        .result {
+            margin-top: 3em;
+            padding: 30px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            max-width: 700px;
+            display: none;
+        }
+        .grok-face {
+            font-size: 5em;
+            animation: think 2s infinite;
+        }
+        @keyframes think {
+            0%, 100% { transform: rotate(-10deg); }
+            50% { transform: rotate(10deg); }
+        }
+        footer {
+            margin-top: auto;
+            padding: 2em;
+            font-size: 0.9em;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <h1>Let Me Grok That For You</h1>
+    <p class="subtitle">For colleagues who can't be bothered to talk to Grok themselves 😏</p>
+
+    <div>
+        <input type="text" id="query" placeholder="Why is the sky blue? Or... how do I center a div?">
+        <button onclick="grokIt()">Grok It!</button>
+    </div>
+
+    <div id="result" class="result">
+        <p class="grok-face">🤖</p>
+        <h2 id="displayQuery"></h2>
+        <p><strong>Grok is now answering this for you...</strong></p>
+        <p>Pro tip: Next time just ask me directly, human.</p>
+        <a id="grokLink" href="#" target="_blank">
+            <button style="background:#00ff9d; color:#111;">Ask Grok Yourself on x.ai</button>
+        </a>
+        <br><br>
+        <button onclick="copyLink()">Copy Shareable Link</button>
+    </div>
+
+    <footer>
+        Built for @akarnokd • Powered by pure sarcasm and xAI vibes
+    </footer>
+
+    <script>
+        function grokIt() {
+            const query = document.getElementById('query').value.trim();
+            if (!query) return alert("Enter a question, you lazy genius.");
+
+            const encoded = encodeURIComponent(query);
+            const shareUrl = `${window.location.origin}${window.location.pathname}?q=${encoded}`;
+
+            document.getElementById('displayQuery').textContent = `"${query}"`;
+            document.getElementById('grokLink').href = `https://grok.x.ai/?q=${encoded}`;
+            document.getElementById('result').style.display = 'block';
+
+            // Update URL without reload
+            history.pushState({}, '', `?q=${encoded}`);
+        }
+
+        function copyLink() {
+            const url = window.location.href;
+            navigator.clipboard.writeText(url).then(() => {
+                alert("Link copied! Now spam your colleagues with it.");
+            });
+        }
+
+        // Handle direct links with ?q=
+        window.onload = function() {
+            const params = new URLSearchParams(window.location.search);
+            const q = params.get('q');
+            if (q) {
+                document.getElementById('query').value = decodeURIComponent(q);
+                document.getElementById('displayQuery').textContent = `"${decodeURIComponent(q)}"`;
+                document.getElementById('grokLink').href = `https://grok.x.ai/?q=${q}`;
+                document.getElementById('result').style.display = 'block';
+            }
+        };
+    </script>
+</body>
+</html>
